@@ -1,11 +1,11 @@
-const {app, BrowserWindow, webContents, protocol} = require('electron')
-const path = require('path')
+const { app, BrowserWindow, webContents, protocol } = require('electron');
+const path = require('path');
 
-app.allowRendererProcessReuse = false
+app.allowRendererProcessReuse = false;
 
 protocol.registerSchemesAsPrivileged([
   { scheme: 'foo', privileges: { standard: true, secure: true } }
-])
+]);
 
 function createWindow () {
   const mainWindow = new BrowserWindow({
@@ -15,27 +15,27 @@ function createWindow () {
       nodeIntegration: true,
       contextIsolation: false
     }
-  })
+  });
 
   mainWindow.webContents.session.protocol.registerFileProtocol('foo', (request, callback) => {
-    const url = new URL(request.url)
-    callback({path: `${__dirname}${url.pathname}`})
-  })
+    const url = new URL(request.url);
+    callback({ path: `${__dirname}${url.pathname}` });
+  });
 
   // Creates WebFrameMain instance before initiating the navigation.
-  mainWindow.webContents.send('test', 'ping')
+  mainWindow.webContents.send('test', 'ping');
 
-  mainWindow.loadURL('foo://app/index.html')
+  mainWindow.loadURL('foo://app/index.html');
 }
 
 app.whenReady().then(() => {
-  createWindow()
+  createWindow();
 
   app.on('activate', function () {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
-  })
-})
+    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+  });
+});
 
 app.on('window-all-closed', function () {
-  if (process.platform !== 'darwin') app.quit()
-})
+  if (process.platform !== 'darwin') app.quit();
+});
