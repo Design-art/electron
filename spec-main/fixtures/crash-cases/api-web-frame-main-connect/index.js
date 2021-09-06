@@ -22,6 +22,10 @@ function createWindow () {
     callback({ path: `${__dirname}${url.pathname}` });
   });
 
+  mainWindow.webContents.on('did-finish-load', () => {
+    setImmediate(() => app.quit());
+  });
+
   // Creates WebFrameMain instance before initiating the navigation.
   mainWindow.webContents.send('test', 'ping');
 
@@ -30,12 +34,4 @@ function createWindow () {
 
 app.whenReady().then(() => {
   createWindow();
-
-  app.on('activate', function () {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
-  });
-});
-
-app.on('window-all-closed', function () {
-  if (process.platform !== 'darwin') app.quit();
 });
